@@ -1,0 +1,23 @@
+{
+    "name": "wars-serverless",
+    "version": "1.0.0",
+    "description": "package for creating workers templates",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "format": "prettier --write '**/*.{js,css,json,md}'"
+    },
+    "author": "node",
+    "license": "ISC",
+    "devDependencies": {
+        "handlebars-loader": "^1.7.1",
+        "handlebars-webpack-plugin": "^1.8.1",
+        "prettier": "^1.17.0",
+        "webpack": "^4.42.0",
+        "webpack-merge": "^4.2.2"
+    },
+    "dependencies": {
+        "handlebars": "^4.7.3",
+        "serverless-cloudflare-workers": "^1.2.0"
+    }
+}

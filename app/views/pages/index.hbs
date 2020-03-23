@@ -1,0 +1,222 @@
+{{#> layout}}
+<header>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark pink scrolling-navbar">
+        <a class="navbar-brand" href="#top"><strong>We're at WARS</strong></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
+            aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#world">World</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#country">Country</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav nav-flex-icons">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://github.com/kring0hk/wars-cfworker" target="_blank"><i class="fab fa-github"></i></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+<main>
+    <div class="container-fluid" id="world">
+        <div class="row py-3 pt-5 mt-5">
+            <div class="col">
+                <h2 class="text-center">World</h2>
+            </div>
+        </div>
+        <div class="row py-3 mx-lg-3">
+            <div class="col-12 col-lg-4">
+                <h3 class="text-center" data-title-for="chart1"></h3>
+                <div id="chart1" class="chart" data-src="confirmed" data-title="Confirmed (> 10000)" data-min="10000"></div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <h3 class="text-center" data-title-for="chart2"></h3>
+                <div id="chart2" class="chart" data-src="deaths" data-title="Deaths (> 1000)" data-min="1000"></div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <h3 class="text-center" data-title-for="chart3"></h3>
+                <div id="chart3" class="chart" data-src="recovered" data-title="Recovered (> 1000)" data-min="1000"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" id="country">
+        <div class="row py-3 pt-3 mt-3">
+            <div class="col">
+                <h2 class="text-center">By Country - Confirmed</h2>
+            </div>
+        </div>
+        <div class="row py-3 mx-lg-3">
+            <div class="col-12 col-lg-4">
+                <h3 class="text-center" data-title-for="chart4"></h3>
+                <div id="chart4" class="chart" data-src="confirmed" data-title="China (> 1000)" data-country="China" data-min="1000" data-scale="logarithmic"></div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <h3 class="text-center" data-title-for="chart5"></h3>
+                <div id="chart5" class="chart" data-src="confirmed" data-title="US (> 1000)" data-country="US" data-min="1000"></div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <h3 class="text-center" data-title-for="chart6"></h3>
+                <div id="chart6" class="chart" data-src="confirmed" data-title="Hong Kong" data-country="Hong Kong"></div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <h3 class="text-center" data-title-for="chart7"></h3>
+                <div id="chart7" class="chart" data-src="confirmed" data-title="Italy" data-country="Italy"></div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <h3 class="text-center" data-title-for="chart8"></h3>
+                <div id="chart8" class="chart" data-src="confirmed" data-title="Spain" data-country="Spain"></div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <h3 class="text-center" data-title-for="chart9"></h3>
+                <div id="chart9" class="chart" data-src="confirmed" data-title="Germany" data-country="Germany"></div>
+            </div>
+        </div>
+    </div>
+</main>
+<footer class="page-footer font-small pink">
+    <div class="footer-copyright text-center py-3">
+        Based on data by <a href="https://github.com/CSSEGISandData/COVID-19" target="_blank">Johns Hopkins University</a>
+    </div>
+</footer>
+<script>
+class DataSet {
+    constructor(csv) {
+        let lines = csv.split('\n')
+        let [,,,, ...labels] = lines.shift().split(',')
+        this.labels = labels.map(t => new Date(t).getTime())
+        this.rows = []
+
+        for (let s of lines) {
+            let state, country, lat, long, values
+
+            [, state, s] = s.match(/^("(?:[^"]*?)"|[^,]*),(.*)/);
+            [, country, s] = s.match(/^("(?:[^"]*?)"|[^,]*),(.*)/);
+            [lat, long, ...values] = s.split(',');
+
+            if (state == 'Hong Kong') {
+                [state, country] = ['', state]
+            }
+
+            [, state] = state.match(/^"?(.*?)"?$/);
+            [, country] = country.match(/^"?(.*?)"?$/);
+
+            this.add([state, country], values.map(s => parseFloat(s)))
+        }
+    }
+    add(categories, row) {
+        this.rows.push([categories, row])
+    }
+    toSeries(filter) {
+        let rows = filter ? this.rows.filter(filter) : this.rows;
+        return rows.map(([[state, country], row]) => ({
+            name: state ? `${state} (${country})` : country,
+            data: row.map((e, i) => [this.labels[i], e])
+        }))
+    }
+}
+
+function rowFilter(chart) {
+    let e = $(chart)
+    return ([[state, country], row]) => {
+        let match = true;
+        let filterState = e.data('state');
+        let filterCountry = e.data('country');
+        let filterMin = e.data('min');
+        let filterMax = e.data('max');
+        let cases = row[row.length - 1];
+
+        if (filterState && state && filterState != state)
+            match = false;
+        if (filterCountry && country && filterCountry != country)
+            match = false;
+        if (filterMin && cases < filterMin)
+            match = false;
+        if (filterMax && cases > filterMax)
+            match = false;
+
+        return match
+    }
+}
+
+// https://github.com/d3/d3-scale-chromatic/blob/master/src/sequential-multi/turbo.js
+function interpolateTurbo(t) {
+    t = Math.max(0, Math.min(1, t));
+    return "rgb("
+        + Math.max(0, Math.min(255, Math.round(34.61 + t * (1172.33 - t * (10793.56 - t * (33300.12 - t * (38394.49 - t * 14825.05))))))) + ", "
+        + Math.max(0, Math.min(255, Math.round(23.31 + t * (557.33 + t * (1225.33 - t * (3574.96 - t * (1073.77 + t * 707.56))))))) + ", "
+        + Math.max(0, Math.min(255, Math.round(27.2 + t * (3211.1 - t * (15327.97 - t * (27814 - t * (22569.18 - t * 6838.66)))))))
+        + ")";
+}
+
+$(function() {
+    let sources = {
+        confirmed: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv',
+        deaths: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv',
+        recovered: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv',
+    }
+
+    let chartOptions = {
+        chart: {
+            type: 'line',
+            height: 350
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            width: 2
+        },
+        xaxis: {
+            type: 'datetime',
+            min: new Date(Date.now() - 30 * 86400000).getTime(),
+        },
+        yaxis: {
+            logarithmic: false
+        },
+        title: {
+            text: 'Chart Title',
+        },
+        tooltip: {
+            x: {
+                format: 'dd MMM yyyy'
+            }
+        },
+    }
+
+    for (let src in sources) {
+        fetch(sources[src]).then(resp => resp.text()).then(csv => {
+            let ds = new DataSet(csv)
+            $('.chart')
+                .filter((i, e) => $(e).data('src') == src)
+                .each((i, e) => {
+                    let options = Object.assign({}, chartOptions);
+                    options.series = ds.toSeries(rowFilter(e))
+                    options.colors = options.series.map((e, i) => interpolateTurbo((1+i) / options.series.length))
+                    if ($(e).data('scale') == 'logarithmic') {
+                        options.yaxis = {logarithmic: true}
+                    }
+                    if ($(e).data('title')) {
+                        options.title = {text: $(e).data('title')}
+                    }
+                    let chart = new ApexCharts(e, options)
+                    chart.render()
+                    $('.spinner', e).hide()
+                })
+        })
+    }
+
+    $('.chart').append('<div class="spinner spinner-border"/>')
+
+    $('*[data-title-for]').each((i, e) => {
+        let id = $(e).data('title-for');
+        $(e).text($('#' + id).data('title'))
+    })
+})
+</script>
+{{/layout}}

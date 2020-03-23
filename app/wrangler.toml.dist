@@ -1,0 +1,17 @@
+type = "webpack"
+workers_dev = false
+account_id = "<cf-account-id>"
+zone_id = "<cf-zone-id>"
+name = "wars-serverless-dev"
+webpack_config = "webpack.config.js"
+route = "<cf-host>/wars-dev/*"
+
+[env.staging]
+name = "wars-serverless-staging"
+webpack_config = "webpack.config.prod.js"
+route = "<cf-host>/wars-staging/*"
+
+[env.production]
+name = "wars-serverless"
+webpack_config = "webpack.config.prod.js"
+route = "<cf-host>/wars/*"
