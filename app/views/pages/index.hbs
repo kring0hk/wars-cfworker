@@ -95,6 +95,9 @@ class DataSet {
         for (let s of lines) {
             let state, country, lat, long, values
 
+            if (s.trim() == "")
+                continue;
+
             [, state, s] = s.match(/^("(?:[^"]*?)"|[^,]*),(.*)/);
             [, country, s] = s.match(/^("(?:[^"]*?)"|[^,]*),(.*)/);
             [lat, long, ...values] = s.split(',');
@@ -129,7 +132,7 @@ function rowFilter(chart) {
         let filterCountry = e.data('country');
         let filterMin = e.data('min');
         let filterMax = e.data('max');
-        let cases = row[row.length - 1];
+        let cases = row[row.length - 1] || 0;
 
         if (filterState && state && filterState != state)
             match = false;
