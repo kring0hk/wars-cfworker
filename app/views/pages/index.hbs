@@ -65,7 +65,7 @@
         </div>
         <div class="row py-3 mx-lg-3">
             <div class="col-12 col-lg-4">
-                <div id="chart-cn" class="chart" data-src="confirmed" data-title="China (> 1000)" data-country="China" data-min="1000" data-scale="logarithmic"></div>
+                <div id="chart-cn" class="chart" data-src="confirmed" data-country="China"></div>
             </div>
             <div class="col-12 col-lg-4">
                 <div id="chart-it" class="chart" data-src="confirmed" data-country="Italy"></div>
@@ -83,13 +83,13 @@
                 <div id="chart-ir" class="chart" data-src="confirmed" data-country="Iran"></div>
             </div>
             <div class="col-12 col-lg-4">
-                <div id="chart-fr" class="chart" data-src="confirmed" data-title="France (> 1000)" data-country="France" data-min="1000"></div>
+                <div id="chart-fr" class="chart" data-src="confirmed" data-country="France"></div>
             </div>
             <div class="col-12 col-lg-4">
                 <div id="chart-ch" class="chart" data-src="confirmed" data-country="Switzerland"></div>
             </div>
             <div class="col-12 col-lg-4">
-                <div id="chart-uk" class="chart" data-src="confirmed" data-title="United Kingdom (> 1000)" data-country="United Kingdom" data-min="1000"></div>
+                <div id="chart-uk" class="chart" data-src="confirmed" data-country="United Kingdom"></div>
             </div>
         </div>
     </div>
@@ -101,7 +101,7 @@
         </div>
         <div class="row py-3 mx-lg-3">
             <div class="col-12 col-lg-4">
-                <div id="chart-nl" class="chart" data-src="confirmed" data-title="Netherlands (> 100)" data-country="Netherlands" data-min="100"></div>
+                <div id="chart-nl" class="chart" data-src="confirmed" data-country="Netherlands"></div>
             </div>
             <div class="col-12 col-lg-4">
                 <div id="chart-at" class="chart" data-src="confirmed" data-country="Austria"></div>
@@ -128,7 +128,7 @@
         </div>
         <div class="row py-3 mx-lg-3">
             <div class="col-12 col-lg-4">
-                <div id="chart-ca" class="chart" data-src="confirmed" data-title="Canada (> 100)" data-country="Canada" data-min="100"></div>
+                <div id="chart-ca" class="chart" data-src="confirmed" data-country="Canada"></div>
             </div>
             <div class="col-12 col-lg-4">
                 <div id="chart-br" class="chart" data-src="confirmed" data-country="Brazil"></div>
@@ -161,7 +161,7 @@
                 <div id="chart-kr" class="chart" data-src="confirmed" data-country="Korea, South"></div>
             </div>
             <div class="col-12 col-lg-4">
-                <div id="chart-au" class="chart" data-src="confirmed" data-title="Australia (> 100)" data-country="Australia" data-min="100"></div>
+                <div id="chart-au" class="chart" data-src="confirmed" data-country="Australia"></div>
             </div>
             <div class="col-12 col-lg-4">
                 <div id="chart-my" class="chart" data-src="confirmed" data-country="Malaysia"></div>
@@ -254,11 +254,16 @@
 </footer>
 <script>
 class DataSet {
-    constructor(csv) {
+    constructor(labels, rows) {
+        this.labels = labels;
+        this.rows = rows;
+    }
+    static load(csv) {
         let lines = csv.split('\n')
         let [,,,, ...labels] = lines.shift().split(',')
-        this.labels = labels.map(t => new Date(t).getTime())
-        this.rows = []
+
+        labels = labels.map(t => new Date(t).getTime())
+        let ds = new DataSet(labels, [])
 
         for (let s of lines.filter(ln => ln.trim() != "")) {
             let state, country, lat, long, values
@@ -274,18 +279,39 @@ class DataSet {
             [, state] = state.match(/^"?(.*?)"?$/);
             [, country] = country.match(/^"?(.*?)"?$/);
 
-            this.add([state, country], values.map(s => parseFloat(s)))
+            ds.add([state, country], values.map(s => parseFloat(s)))
         }
+
+        return ds
     }
     add(categories, row) {
         this.rows.push([categories, row])
     }
-    toSeries(filter) {
+    toTimeSeries(filter) {
         let rows = filter ? this.rows.filter(filter) : this.rows;
         return rows.map(([[state, country], row]) => ({
             name: state ? `${state} (${country})` : country,
             data: row.map((e, i) => [this.labels[i], e])
         }))
+    }
+    groupByCountry() {
+        let ds = new DataSet([...this.labels], [])
+        let countries = new Map();
+
+        for (let [[state, country], row] of this.rows) {
+            if (!countries.has(country)) {
+                countries.set(country, [...row])
+            } else {
+                let grouped = countries.get(country)
+                row.forEach((e, i) => { grouped[i] += e })
+            }
+        }
+
+        for (let [country, row] of countries) {
+            ds.add(['', country], row)
+        }
+
+        return ds
     }
 }
 
@@ -324,7 +350,7 @@ function interpolateTurbo(t) {
 
 function renderChart(e, ds, chartOptions) {
     let options = Object.assign({}, chartOptions);
-    options.series = ds.toSeries(rowFilter(e))
+    options.series = ds.toTimeSeries(rowFilter(e))
     options.colors = options.series.map((e, i) => interpolateTurbo((1+i) / options.series.length))
 
     if ($(e).data('scale') == 'logarithmic') {
@@ -392,7 +418,7 @@ $(function() {
         fetch(sources[src]).then(resp => resp.text()).then(csv => {
             $('.chart')
                 .filter((i, e) => $(e).data('src') == src)
-                .each((i, e) => renderChart(e, new DataSet(csv), chartOptions))
+                .each((i, e) => renderChart(e, DataSet.load(csv).groupByCountry(), chartOptions))
         })
     }
 })
