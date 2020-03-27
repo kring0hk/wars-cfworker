@@ -223,6 +223,33 @@ function interpolateTurbo(t) {
         + ")";
 }
 
+function renderChart(e, ds, chartOptions) {
+    let options = Object.assign({}, chartOptions);
+    options.series = ds.toSeries(rowFilter(e))
+    options.colors = options.series.map((e, i) => interpolateTurbo((1+i) / options.series.length))
+
+    if ($(e).data('scale') == 'logarithmic') {
+        options.yaxis = {logarithmic: true}
+    }
+
+    if ($(e).data('title')) {
+        options.title = {text: $(e).data('title')}
+    } else if ($(e).data('country')) {
+        options.title = {text: $(e).data('country')}
+    }
+
+    let observer = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+            let chart = new ApexCharts(e, options)
+            chart.render()
+            $('.spinner', e).hide()
+            observer.unobserve(e)
+        }
+    }, { threshold: 0.1 });
+
+    observer.observe(e)
+}
+
 $(function() {
     let sources = {
         confirmed: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv',
@@ -258,35 +285,17 @@ $(function() {
         },
     }
 
+    $('.chart')
+        .append('<div class="spinner spinner-border"/>')
+        .css('min-height', '350px')
+
     for (let src in sources) {
         fetch(sources[src]).then(resp => resp.text()).then(csv => {
-            let ds = new DataSet(csv)
             $('.chart')
                 .filter((i, e) => $(e).data('src') == src)
-                .each((i, e) => {
-                    let options = Object.assign({}, chartOptions);
-                    options.series = ds.toSeries(rowFilter(e))
-                    options.colors = options.series.map((e, i) => interpolateTurbo((1+i) / options.series.length))
-
-                    if ($(e).data('scale') == 'logarithmic') {
-                        options.yaxis = {logarithmic: true}
-                    }
-
-                    if ($(e).data('title')) {
-                        options.title = {text: $(e).data('title')}
-                    } else if ($(e).data('country')) {
-                        options.title = {text: $(e).data('country')}
-                    }
-
-                    let chart = new ApexCharts(e, options)
-                    chart.render()
-                    $('.spinner', e).hide()
-                })
+                .each((i, e) => renderChart(e, new DataSet(csv), chartOptions))
         })
     }
-
-    $('.chart').append('<div class="spinner spinner-border"/>')
-
 })
 </script>
 {{/layout}}
