@@ -47,6 +47,17 @@
         </div>
         <div class="row py-3 mx-lg-3">
             <div class="col-12 col-lg-4">
+                <div id="chart-world-1" class="chart" data-src="confirmed" data-view="china-world" data-title="Confirmed"></div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <div id="chart-world-2" class="chart" data-src="deaths" data-view="china-world" data-title="Deaths"></div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <div id="chart-world-3" class="chart" data-src="recovered" data-view="china-world" data-title="Recovered"></div>
+            </div>
+        </div>
+        <div class="row py-3 mx-lg-3">
+            <div class="col-12 col-lg-4">
                 <div id="chart-world-1" class="chart" data-src="confirmed" data-title="Confirmed (> 10000)" data-min="10000"></div>
             </div>
             <div class="col-12 col-lg-4">
@@ -65,13 +76,13 @@
         </div>
         <div class="row py-3 mx-lg-3">
             <div class="col-12 col-lg-4">
-                <div id="chart-cn" class="chart" data-src="confirmed" data-country="China"></div>
+                <div id="chart-us" class="chart" data-src="confirmed" data-country="US"></div>
             </div>
             <div class="col-12 col-lg-4">
                 <div id="chart-it" class="chart" data-src="confirmed" data-country="Italy"></div>
             </div>
             <div class="col-12 col-lg-4">
-                <div id="chart-us" class="chart" data-src="confirmed" data-country="US"></div>
+                <div id="chart-cn" class="chart" data-src="confirmed" data-country="China"></div>
             </div>
             <div class="col-12 col-lg-4">
                 <div id="chart-es" class="chart" data-src="confirmed" data-country="Spain"></div>
@@ -254,16 +265,16 @@
 </footer>
 <script>
 class DataSet {
-    constructor(labels, rows) {
-        this.labels = labels;
+    constructor(dates, rows) {
+        this.dates = dates;
         this.rows = rows;
     }
     static load(csv) {
         let lines = csv.split('\n')
-        let [,,,, ...labels] = lines.shift().split(',')
+        let [,,,, ...dates] = lines.shift().split(',')
 
-        labels = labels.map(t => new Date(t).getTime())
-        let ds = new DataSet(labels, [])
+        dates = dates.map(t => new Date(t).getTime())
+        let rows = []
 
         for (let s of lines.filter(ln => ln.trim() != "")) {
             let state, country, lat, long, values
@@ -279,24 +290,24 @@ class DataSet {
             [, state] = state.match(/^"?(.*?)"?$/);
             [, country] = country.match(/^"?(.*?)"?$/);
 
-            ds.add([state, country], values.map(s => parseFloat(s)))
+            rows.push([[state, country], values.map(s => parseFloat(s))])
         }
 
-        return ds
-    }
-    add(categories, row) {
-        this.rows.push([categories, row])
+        return new DataSet(dates, rows)
     }
     toTimeSeries(filter) {
         let rows = filter ? this.rows.filter(filter) : this.rows;
         return rows.map(([[state, country], row]) => ({
             name: state ? `${state} (${country})` : country,
-            data: row.map((e, i) => [this.labels[i], e])
+            data: row.map((e, i) => [this.dates[i], e])
         }))
     }
+    relabel(fn) {
+        let rows = this.rows.map(([categories, row]) => [fn(categories), [...row]])
+        return new DataSet([...this.dates], rows)
+    }
     groupByCountry() {
-        let ds = new DataSet([...this.labels], [])
-        let countries = new Map();
+        let countries = new Map()
 
         for (let [[state, country], row] of this.rows) {
             if (!countries.has(country)) {
@@ -307,11 +318,9 @@ class DataSet {
             }
         }
 
-        for (let [country, row] of countries) {
-            ds.add(['', country], row)
-        }
+        let rows = Array.from(countries, ([country, row]) => [['', country], row])
 
-        return ds
+        return new DataSet([...this.dates], rows)
     }
 }
 
@@ -348,9 +357,9 @@ function interpolateTurbo(t) {
         + ")";
 }
 
-function renderChart(e, ds, chartOptions) {
+function renderChart(e, series, chartOptions) {
     let options = Object.assign({}, chartOptions);
-    options.series = ds.toTimeSeries(rowFilter(e))
+    options.series = series
     options.colors = options.series.map((e, i) => interpolateTurbo((1+i) / options.series.length))
 
     if ($(e).data('scale') == 'logarithmic') {
@@ -405,9 +414,9 @@ $(function() {
         },
         tooltip: {
             x: {
-                format: 'dd MMM yyyy'
+                show: false
             }
-        },
+        }
     }
 
     $('.chart')
@@ -416,9 +425,20 @@ $(function() {
 
     for (let src in sources) {
         fetch(sources[src]).then(resp => resp.text()).then(csv => {
+            let dsByCountry = DataSet.load(csv).groupByCountry()
+            let dsChinaWorld = dsByCountry.relabel(([state, country]) => ['', country == 'China' ? country : 'World']).groupByCountry()
+
             $('.chart')
                 .filter((i, e) => $(e).data('src') == src)
-                .each((i, e) => renderChart(e, DataSet.load(csv).groupByCountry(), chartOptions))
+                .each((i, e) => {
+                    let view;
+                    if ($(e).data('view') == 'china-world') {
+                        view = dsChinaWorld
+                    } else {
+                        view = dsByCountry
+                    }
+                    renderChart(e, view.toTimeSeries(rowFilter(e)), chartOptions)
+                })
         })
     }
 })
