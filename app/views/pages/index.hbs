@@ -9,6 +9,9 @@
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
+                    <a class="nav-link" href="#world">World</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="#top9">Top 9</a>
                 </li>
                 <li class="nav-item">
@@ -39,6 +42,24 @@
     </nav>
 </header>
 <main>
+    <div class="container-fluid" id="overview">
+        <div class="row py-3 pt-5 mt-5">
+            <div class="col">
+                <h2 class="text-center">Overview</h2>
+            </div>
+        </div>
+        <div class="row py-3 mx-lg-3">
+            <div class="col-12 col-lg-4">
+                <div id="chart-overview-1" class="donut" data-src="confirmed" data-title="Confirmed" data-topn="9"></div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <div id="chart-overview-2" class="donut" data-src="deaths" data-title="Deaths" data-topn="7"></div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <div id="chart-overview-3" class="donut" data-src="recovered" data-title="Recovered" data-topn="7"></div>
+            </div>
+        </div>
+    </div>
     <div class="container-fluid" id="world">
         <div class="row py-3 pt-5 mt-5">
             <div class="col">
@@ -325,7 +346,7 @@ class DataSet {
 }
 
 function rowFilter(chart) {
-    let e = $(chart)
+    const e = $(chart)
     return ([[state, country], row]) => {
         let match = true;
         let filterState = e.data('state');
@@ -357,45 +378,14 @@ function interpolateTurbo(t) {
         + ")";
 }
 
-function renderChart(e, series, chartOptions) {
-    let options = Object.assign({}, chartOptions);
-    options.series = series
-    options.colors = options.series.map((e, i) => interpolateTurbo((1+i) / options.series.length))
-
-    if ($(e).data('scale') == 'logarithmic') {
-        options.yaxis = {logarithmic: true}
-    }
-
-    if ($(e).data('title')) {
-        options.title = {text: $(e).data('title')}
-    } else if ($(e).data('country')) {
-        options.title = {text: $(e).data('country')}
-    }
-
-    let observer = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting) {
-            let chart = new ApexCharts(e, options)
-            chart.render()
-            $('.spinner', e).hide()
-            observer.unobserve(e)
-        }
-    }, { threshold: 0.1 });
-
-    observer.observe(e)
-}
-
-$(function() {
-    let sources = {
-        confirmed: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv',
-        deaths: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv',
-        recovered: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv',
-    }
-
-    let chartOptions = {
+function renderChart(e, series) {
+    const options = {
         chart: {
             type: 'line',
             height: 350
         },
+        series: series,
+        colors: series.map((e, i) => interpolateTurbo((1+i) / series.length)),
         dataLabels: {
             enabled: false
         },
@@ -419,14 +409,90 @@ $(function() {
         }
     }
 
+    if ($(e).data('scale') == 'logarithmic') {
+        options.yaxis = {logarithmic: true}
+    }
+
+    if ($(e).data('title')) {
+        options.title = {text: $(e).data('title')}
+    } else if ($(e).data('country')) {
+        options.title = {text: $(e).data('country')}
+    }
+
+    renderDelayed(e, options)
+}
+
+function renderDonut(e, series) {
+    const options = {
+        chart: {
+            type: 'donut',
+            height: 350
+        },
+        series: series.map(([value, label]) => value),
+        labels: series.map(([value, label]) => label),
+        colors: series.map((e, i) => interpolateTurbo((series.length - i) / series.length)),
+        legend: {
+            show: false,
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: (value, { seriesIndex, dataPointIndex, w }) => {
+                const country = w.config.labels[seriesIndex]
+                return `${country} - ${value.toFixed(2)}%`
+            }
+        },
+        plotOptions: {
+            pie: {
+                donut: {
+                    labels: {
+                        show: true,
+                        total: {
+                            show: true,
+                            label: $(e).data('title'),
+                        }
+                    }
+                }
+            }
+        }
+    }
+    renderDelayed(e, options)
+}
+
+function renderDelayed(e, options) {
+    const observer = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+            const chart = new ApexCharts(e, options)
+            chart.render()
+            $('.spinner', e).hide()
+            observer.unobserve(e)
+        }
+    }, { threshold: 0.1 });
+
+    observer.observe(e)
+}
+
+function topNByCountry(ds, topn) {
+    const byCountry = ds.rows.map(([[state, country], row]) => [row.slice(-1)[0], country]).sort(([a], [b]) => b - a)
+    const rest = byCountry.slice(topn).reduce((a, [b]) => a + b, 0)
+    byCountry.splice(topn, byCountry.length, [rest, 'Others'])
+    return byCountry
+}
+
+$(function() {
+    const sources = {
+        confirmed: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv',
+        deaths: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv',
+        recovered: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv',
+    }
+
     $('.chart')
         .append('<div class="spinner spinner-border"/>')
         .css('min-height', '350px')
 
     for (let src in sources) {
         fetch(sources[src]).then(resp => resp.text()).then(csv => {
-            let dsByCountry = DataSet.load(csv).groupByCountry()
-            let dsChinaWorld = dsByCountry.relabel(([state, country]) => ['', country == 'China' ? country : 'World']).groupByCountry()
+            const dsByCountry = DataSet.load(csv).groupByCountry()
+            const dsChinaWorld = dsByCountry.relabel(([state, country]) => ['', country == 'China' ? country : 'World']).groupByCountry()
 
             $('.chart')
                 .filter((i, e) => $(e).data('src') == src)
@@ -437,10 +503,21 @@ $(function() {
                     } else {
                         view = dsByCountry
                     }
-                    renderChart(e, view.toTimeSeries(rowFilter(e)), chartOptions)
+                    renderChart(e, view.toTimeSeries(rowFilter(e)))
+                })
+
+            $('.donut')
+                .filter((i, e) => $(e).data('src') == src)
+                .each((i, e) => {
+                    renderDonut(e, topNByCountry(dsByCountry, $(e).data('topn')))
                 })
         })
     }
+
+    const smoothScroll = new SmoothScroll('header nav a', {
+        header: 'header nav',
+        speedAsDuration: true,
+    });
 })
 </script>
 {{/layout}}
