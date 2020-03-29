@@ -1,523 +1,473 @@
 {{#> layout}}
-<header>
-    <nav class="navbar fixed-top navbar-expand-lg navbar-dark pink scrolling-navbar">
-        <a class="navbar-brand" href="#top"><strong>We're at WARS</strong></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
-            aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#world">World</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#top9">Top 9</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#europe">Europe</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#americas">Americas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#apac">APAC</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#central-south-asia">Central/South Asia</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#middle-east">Middle East</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#africa">Africa</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav nav-flex-icons">
-                <li class="nav-item">
-                    <a class="nav-link" href="https://github.com/kring0hk/wars-cfworker" target="_blank"><i class="fab fa-github"></i></a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-</header>
-<main>
-    <div class="container-fluid" id="overview">
-        <div class="row py-3 pt-5 mt-5">
-            <div class="col">
-                <h2 class="text-center">Overview</h2>
-            </div>
-        </div>
-        <div class="row py-3 mx-lg-3">
-            <div class="col-12 col-lg-4">
-                <div id="chart-overview-1" class="donut" data-src="confirmed" data-title="Confirmed" data-topn="9"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-overview-2" class="donut" data-src="deaths" data-title="Deaths" data-topn="7"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-overview-3" class="donut" data-src="recovered" data-title="Recovered" data-topn="7"></div>
-            </div>
-        </div>
+<div class="container-fluid" id="overview">
+  <div class="row py-3 pt-5 mt-5">
+    <div class="col">
+      <h2 class="text-center">Overview</h2>
     </div>
-    <div class="container-fluid" id="world">
-        <div class="row py-3 pt-5 mt-5">
-            <div class="col">
-                <h2 class="text-center">World Trend</h2>
-            </div>
-        </div>
-        <div class="row py-3 mx-lg-3">
-            <div class="col-12 col-lg-4">
-                <div id="chart-world-1" class="chart" data-src="confirmed" data-view="china-world" data-title="Confirmed"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-world-2" class="chart" data-src="deaths" data-view="china-world" data-title="Deaths"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-world-3" class="chart" data-src="recovered" data-view="china-world" data-title="Recovered"></div>
-            </div>
-        </div>
-        <div class="row py-3 mx-lg-3">
-            <div class="col-12 col-lg-4">
-                <div id="chart-world-1" class="chart" data-src="confirmed" data-title="Confirmed (> 10000)" data-min="10000"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-world-2" class="chart" data-src="deaths" data-title="Deaths (> 1000)" data-min="1000"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-world-3" class="chart" data-src="recovered" data-title="Recovered (> 1000)" data-min="1000"></div>
-            </div>
-        </div>
+  </div>
+  <div class="row py-3 mx-lg-3">
+    <div class="col-12 col-lg-4">
+      <div id="chart-overview-1" class="donut" data-src="confirmed" data-title="Confirmed" data-topn="9"></div>
     </div>
-    <div class="container-fluid" id="top9">
-        <div class="row py-3 pt-3 mt-3">
-            <div class="col">
-                <h2 class="text-center">Top 9 (Confirmed)</h2>
-            </div>
-        </div>
-        <div class="row py-3 mx-lg-3">
-            <div class="col-12 col-lg-4">
-                <div id="chart-us" class="chart" data-src="confirmed" data-country="US"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-it" class="chart" data-src="confirmed" data-country="Italy"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-cn" class="chart" data-src="confirmed" data-country="China"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-es" class="chart" data-src="confirmed" data-country="Spain"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-de" class="chart" data-src="confirmed" data-country="Germany"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-ir" class="chart" data-src="confirmed" data-country="Iran"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-fr" class="chart" data-src="confirmed" data-country="France"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-ch" class="chart" data-src="confirmed" data-country="Switzerland"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-uk" class="chart" data-src="confirmed" data-country="United Kingdom"></div>
-            </div>
-        </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-overview-2" class="donut" data-src="deaths" data-title="Deaths" data-topn="7"></div>
     </div>
-    <div class="container-fluid" id="europe">
-        <div class="row py-3 pt-3 mt-3">
-            <div class="col">
-                <h2 class="text-center">Europe (Confirmed)</h2>
-            </div>
-        </div>
-        <div class="row py-3 mx-lg-3">
-            <div class="col-12 col-lg-4">
-                <div id="chart-nl" class="chart" data-src="confirmed" data-country="Netherlands"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-at" class="chart" data-src="confirmed" data-country="Austria"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-be" class="chart" data-src="confirmed" data-country="Belgium"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-no" class="chart" data-src="confirmed" data-country="Norway"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-pt" class="chart" data-src="confirmed" data-country="Portugal"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-se" class="chart" data-src="confirmed" data-country="Sweden"></div>
-            </div>
-        </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-overview-3" class="donut" data-src="recovered" data-title="Recovered" data-topn="7"></div>
     </div>
-    <div class="container-fluid" id="americas">
-        <div class="row py-3 pt-3 mt-3">
-            <div class="col">
-                <h2 class="text-center">Americas (Confirmed)</h2>
-            </div>
-        </div>
-        <div class="row py-3 mx-lg-3">
-            <div class="col-12 col-lg-4">
-                <div id="chart-ca" class="chart" data-src="confirmed" data-country="Canada"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-br" class="chart" data-src="confirmed" data-country="Brazil"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-ec" class="chart" data-src="confirmed" data-country="Ecuador"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-cl" class="chart" data-src="confirmed" data-country="Chile"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-pe" class="chart" data-src="confirmed" data-country="Peru"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-co" class="chart" data-src="confirmed" data-country="Colombia"></div>
-            </div>
-        </div>
+  </div>
+</div>
+<div class="container-fluid" id="world">
+  <div class="row py-3 pt-5 mt-5">
+    <div class="col">
+      <h2 class="text-center">World Trend</h2>
     </div>
-    <div class="container-fluid" id="apac">
-        <div class="row py-3 pt-3 mt-3">
-            <div class="col">
-                <h2 class="text-center">APAC (Confirmed)</h2>
-            </div>
-        </div>
-        <div class="row py-3 mx-lg-3">
-            <div class="col-12 col-lg-4">
-                <div id="chart-hk" class="chart" data-src="confirmed" data-country="Hong Kong"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-kr" class="chart" data-src="confirmed" data-country="Korea, South"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-au" class="chart" data-src="confirmed" data-country="Australia"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-my" class="chart" data-src="confirmed" data-country="Malaysia"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-jp" class="chart" data-src="confirmed" data-country="Japan"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-sg" class="chart" data-src="confirmed" data-country="Singapore"></div>
-            </div>
-        </div>
+  </div>
+  <div class="row py-3 mx-lg-3">
+    <div class="col-12 col-lg-4">
+      <div id="chart-world-1" class="chart" data-src="confirmed" data-view="china-world" data-title="Confirmed"></div>
     </div>
-    <div class="container-fluid" id="central-south-asia">
-        <div class="row py-3 pt-3 mt-3">
-            <div class="col">
-                <h2 class="text-center">Central/South Asia (Confirmed)</h2>
-            </div>
-        </div>
-        <div class="row py-3 mx-lg-3">
-            <div class="col-12 col-lg-4">
-                <div id="chart-pk" class="chart" data-src="confirmed" data-country="Pakistan"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-ru" class="chart" data-src="confirmed" data-country="Russia"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-in" class="chart" data-src="confirmed" data-country="India"></div>
-            </div>
-        </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-world-2" class="chart" data-src="deaths" data-view="china-world" data-title="Deaths"></div>
     </div>
-    <div class="container-fluid" id="middle-east">
-        <div class="row py-3 pt-3 mt-3">
-            <div class="col">
-                <h2 class="text-center">Middle East (Confirmed)</h2>
-            </div>
-        </div>
-        <div class="row py-3 mx-lg-3">
-            <div class="col-12 col-lg-4">
-                <div id="chart-tr" class="chart" data-src="confirmed" data-country="Turkey"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-il" class="chart" data-src="confirmed" data-country="Israel"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-sa" class="chart" data-src="confirmed" data-country="Saudi Arabia"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-qa" class="chart" data-src="confirmed" data-country="Qatar"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-eg" class="chart" data-src="confirmed" data-country="Egypt"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-bh" class="chart" data-src="confirmed" data-country="Bahrain"></div>
-            </div>
-        </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-world-3" class="chart" data-src="recovered" data-view="china-world" data-title="Recovered"></div>
     </div>
-    <div class="container-fluid" id="africa">
-        <div class="row py-3 pt-3 mt-3">
-            <div class="col">
-                <h2 class="text-center">Africa (Confirmed)</h2>
-            </div>
-        </div>
-        <div class="row py-3 mx-lg-3">
-            <div class="col-12 col-lg-4">
-                <div id="chart-za" class="chart" data-src="confirmed" data-country="South Africa"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-dz" class="chart" data-src="confirmed" data-country="Algeria"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-ma" class="chart" data-src="confirmed" data-country="Morocco"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-tn" class="chart" data-src="confirmed" data-country="Tunisia"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-bf" class="chart" data-src="confirmed" data-country="Burkina Faso"></div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div id="chart-sn" class="chart" data-src="confirmed" data-country="Senegal"></div>
-            </div>
-        </div>
+  </div>
+  <div class="row py-3 mx-lg-3">
+    <div class="col-12 col-lg-4">
+      <div id="chart-world-1" class="chart" data-src="confirmed" data-title="Confirmed (> 10000)" data-min="10000"></div>
     </div>
-</main>
-<footer class="page-footer font-small pink">
-    <div class="footer-copyright text-center py-3">
-        Based on data by <a href="https://github.com/CSSEGISandData/COVID-19" target="_blank">Johns Hopkins University</a>
+    <div class="col-12 col-lg-4">
+      <div id="chart-world-2" class="chart" data-src="deaths" data-title="Deaths (> 1000)" data-min="1000"></div>
     </div>
-</footer>
+    <div class="col-12 col-lg-4">
+      <div id="chart-world-3" class="chart" data-src="recovered" data-title="Recovered (> 1000)" data-min="1000"></div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid" id="top9">
+  <div class="row py-3 pt-3 mt-3">
+    <div class="col">
+      <h2 class="text-center">Top 9 (Confirmed)</h2>
+    </div>
+  </div>
+  <div class="row py-3 mx-lg-3">
+    <div class="col-12 col-lg-4">
+      <div id="chart-us" class="chart" data-src="confirmed" data-country="US"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-it" class="chart" data-src="confirmed" data-country="Italy"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-cn" class="chart" data-src="confirmed" data-country="China"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-es" class="chart" data-src="confirmed" data-country="Spain"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-de" class="chart" data-src="confirmed" data-country="Germany"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-ir" class="chart" data-src="confirmed" data-country="Iran"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-fr" class="chart" data-src="confirmed" data-country="France"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-ch" class="chart" data-src="confirmed" data-country="Switzerland"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-uk" class="chart" data-src="confirmed" data-country="United Kingdom"></div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid" id="europe">
+  <div class="row py-3 pt-3 mt-3">
+    <div class="col">
+      <h2 class="text-center">Europe (Confirmed)</h2>
+    </div>
+  </div>
+  <div class="row py-3 mx-lg-3">
+    <div class="col-12 col-lg-4">
+      <div id="chart-nl" class="chart" data-src="confirmed" data-country="Netherlands"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-at" class="chart" data-src="confirmed" data-country="Austria"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-be" class="chart" data-src="confirmed" data-country="Belgium"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-no" class="chart" data-src="confirmed" data-country="Norway"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-pt" class="chart" data-src="confirmed" data-country="Portugal"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-se" class="chart" data-src="confirmed" data-country="Sweden"></div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid" id="americas">
+  <div class="row py-3 pt-3 mt-3">
+    <div class="col">
+      <h2 class="text-center">Americas (Confirmed)</h2>
+    </div>
+  </div>
+  <div class="row py-3 mx-lg-3">
+    <div class="col-12 col-lg-4">
+      <div id="chart-ca" class="chart" data-src="confirmed" data-country="Canada"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-br" class="chart" data-src="confirmed" data-country="Brazil"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-ec" class="chart" data-src="confirmed" data-country="Ecuador"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-cl" class="chart" data-src="confirmed" data-country="Chile"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-pe" class="chart" data-src="confirmed" data-country="Peru"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-co" class="chart" data-src="confirmed" data-country="Colombia"></div>
+    </div>
+  </div>
+</div><div class="container-fluid" id="apac">
+  <div class="row py-3 pt-3 mt-3">
+    <div class="col">
+      <h2 class="text-center">APAC (Confirmed)</h2>
+    </div>
+  </div>
+  <div class="row py-3 mx-lg-3">
+    <div class="col-12 col-lg-4">
+      <div id="chart-hk" class="chart" data-src="confirmed" data-country="Hong Kong"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-kr" class="chart" data-src="confirmed" data-country="Korea, South"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-au" class="chart" data-src="confirmed" data-country="Australia"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-my" class="chart" data-src="confirmed" data-country="Malaysia"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-jp" class="chart" data-src="confirmed" data-country="Japan"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-sg" class="chart" data-src="confirmed" data-country="Singapore"></div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid" id="central-south-asia">
+  <div class="row py-3 pt-3 mt-3">
+    <div class="col">
+      <h2 class="text-center">Central/South Asia (Confirmed)</h2>
+    </div>
+  </div>
+  <div class="row py-3 mx-lg-3">
+    <div class="col-12 col-lg-4">
+      <div id="chart-pk" class="chart" data-src="confirmed" data-country="Pakistan"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-ru" class="chart" data-src="confirmed" data-country="Russia"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-in" class="chart" data-src="confirmed" data-country="India"></div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid" id="middle-east">
+  <div class="row py-3 pt-3 mt-3">
+    <div class="col">
+      <h2 class="text-center">Middle East (Confirmed)</h2>
+    </div>
+  </div>
+  <div class="row py-3 mx-lg-3">
+    <div class="col-12 col-lg-4">
+      <div id="chart-tr" class="chart" data-src="confirmed" data-country="Turkey"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-il" class="chart" data-src="confirmed" data-country="Israel"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-sa" class="chart" data-src="confirmed" data-country="Saudi Arabia"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-qa" class="chart" data-src="confirmed" data-country="Qatar"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-eg" class="chart" data-src="confirmed" data-country="Egypt"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-bh" class="chart" data-src="confirmed" data-country="Bahrain"></div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid" id="africa">
+  <div class="row py-3 pt-3 mt-3">
+    <div class="col">
+      <h2 class="text-center">Africa (Confirmed)</h2>
+    </div>
+  </div>
+  <div class="row py-3 mx-lg-3">
+    <div class="col-12 col-lg-4">
+      <div id="chart-za" class="chart" data-src="confirmed" data-country="South Africa"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-dz" class="chart" data-src="confirmed" data-country="Algeria"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-ma" class="chart" data-src="confirmed" data-country="Morocco"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-tn" class="chart" data-src="confirmed" data-country="Tunisia"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-bf" class="chart" data-src="confirmed" data-country="Burkina Faso"></div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div id="chart-sn" class="chart" data-src="confirmed" data-country="Senegal"></div>
+    </div>
+  </div>
+</div>
 <script>
-class DataSet {
+  class DataSet {
     constructor(dates, rows) {
-        this.dates = dates;
-        this.rows = rows;
+      this.dates = dates;
+      this.rows = rows;
     }
     static load(csv) {
-        let lines = csv.split('\n')
-        let [,,,, ...dates] = lines.shift().split(',')
+      let lines = csv.split('\n')
+      let [, , , , ...dates] = lines.shift().split(',')
 
-        dates = dates.map(t => new Date(t).getTime())
-        let rows = []
+      dates = dates.map(t => new Date(t).getTime())
+      let rows = []
 
-        for (let s of lines.filter(ln => ln.trim() != "")) {
-            let state, country, lat, long, values
+      for (let s of lines.filter(ln => ln.trim() != "")) {
+        let state, country, lat, long, values
 
-            [, state, s] = s.match(/^("(?:[^"]*?)"|[^,]*),(.*)/);
-            [, country, s] = s.match(/^("(?:[^"]*?)"|[^,]*),(.*)/);
-            [lat, long, ...values] = s.split(',');
+        [, state, s] = s.match(/^("(?:[^"]*?)"|[^,]*),(.*)/);
+        [, country, s] = s.match(/^("(?:[^"]*?)"|[^,]*),(.*)/);
+        [lat, long, ...values] = s.split(',');
 
-            if (state == 'Hong Kong') {
-                [state, country] = ['', state]
-            }
-
-            [, state] = state.match(/^"?(.*?)"?$/);
-            [, country] = country.match(/^"?(.*?)"?$/);
-
-            rows.push([[state, country], values.map(s => parseFloat(s))])
+        if (state == 'Hong Kong') {
+          [state, country] = ['', state]
         }
 
-        return new DataSet(dates, rows)
+        [, state] = state.match(/^"?(.*?)"?$/);
+        [, country] = country.match(/^"?(.*?)"?$/);
+
+        rows.push([[state, country], values.map(s => parseFloat(s))])
+      }
+
+      return new DataSet(dates, rows)
     }
     toTimeSeries(filter) {
-        let rows = filter ? this.rows.filter(filter) : this.rows;
-        return rows.map(([[state, country], row]) => ({
-            name: state ? `${state} (${country})` : country,
-            data: row.map((e, i) => [this.dates[i], e])
-        }))
+      let rows = filter ? this.rows.filter(filter) : this.rows;
+      return rows.map(([[state, country], row]) => ({
+        name: state ? `${state} (${country})` : country,
+        data: row.map((e, i) => [this.dates[i], e])
+      }))
     }
     relabel(fn) {
-        let rows = this.rows.map(([categories, row]) => [fn(categories), [...row]])
-        return new DataSet([...this.dates], rows)
+      let rows = this.rows.map(([categories, row]) => [fn(categories), [...row]])
+      return new DataSet([...this.dates], rows)
     }
     groupByCountry() {
-        let countries = new Map()
+      let countries = new Map()
 
-        for (let [[state, country], row] of this.rows) {
-            if (!countries.has(country)) {
-                countries.set(country, [...row])
-            } else {
-                let grouped = countries.get(country)
-                row.forEach((e, i) => { grouped[i] += e })
-            }
+      for (let [[state, country], row] of this.rows) {
+        if (!countries.has(country)) {
+          countries.set(country, [...row])
+        } else {
+          let grouped = countries.get(country)
+          row.forEach((e, i) => { grouped[i] += e })
         }
+      }
 
-        let rows = Array.from(countries, ([country, row]) => [['', country], row])
+      let rows = Array.from(countries, ([country, row]) => [['', country], row])
 
-        return new DataSet([...this.dates], rows)
+      return new DataSet([...this.dates], rows)
     }
-}
+  }
 
-function rowFilter(chart) {
+  function rowFilter(chart) {
     const e = $(chart)
     return ([[state, country], row]) => {
-        let match = true;
-        let filterState = e.data('state');
-        let filterCountry = e.data('country');
-        let filterMin = e.data('min');
-        let filterMax = e.data('max');
-        let cases = row[row.length - 1] || 0;
+      let match = true;
+      let filterState = e.data('state');
+      let filterCountry = e.data('country');
+      let filterMin = e.data('min');
+      let filterMax = e.data('max');
+      let cases = row[row.length - 1] || 0;
 
-        if (filterState && state && filterState != state)
-            match = false;
-        if (filterCountry && country && filterCountry != country)
-            match = false;
-        if (filterMin && cases < filterMin)
-            match = false;
-        if (filterMax && cases > filterMax)
-            match = false;
+      if (filterState && state && filterState != state)
+        match = false;
+      if (filterCountry && country && filterCountry != country)
+        match = false;
+      if (filterMin && cases < filterMin)
+        match = false;
+      if (filterMax && cases > filterMax)
+        match = false;
 
-        return match
+      return match
     }
-}
+  }
 
-// https://github.com/d3/d3-scale-chromatic/blob/master/src/sequential-multi/turbo.js
-function interpolateTurbo(t) {
+  // https://github.com/d3/d3-scale-chromatic/blob/master/src/sequential-multi/turbo.js
+  function interpolateTurbo(t) {
     t = Math.max(0, Math.min(1, t));
     return "rgb("
-        + Math.max(0, Math.min(255, Math.round(34.61 + t * (1172.33 - t * (10793.56 - t * (33300.12 - t * (38394.49 - t * 14825.05))))))) + ", "
-        + Math.max(0, Math.min(255, Math.round(23.31 + t * (557.33 + t * (1225.33 - t * (3574.96 - t * (1073.77 + t * 707.56))))))) + ", "
-        + Math.max(0, Math.min(255, Math.round(27.2 + t * (3211.1 - t * (15327.97 - t * (27814 - t * (22569.18 - t * 6838.66)))))))
-        + ")";
-}
+      + Math.max(0, Math.min(255, Math.round(34.61 + t * (1172.33 - t * (10793.56 - t * (33300.12 - t * (38394.49 - t * 14825.05))))))) + ", "
+      + Math.max(0, Math.min(255, Math.round(23.31 + t * (557.33 + t * (1225.33 - t * (3574.96 - t * (1073.77 + t * 707.56))))))) + ", "
+      + Math.max(0, Math.min(255, Math.round(27.2 + t * (3211.1 - t * (15327.97 - t * (27814 - t * (22569.18 - t * 6838.66)))))))
+      + ")";
+  }
 
-function renderChart(e, series) {
+  function renderChart(e, series) {
     const options = {
-        chart: {
-            type: 'line',
-            height: 350
-        },
-        series: series,
-        colors: series.map((e, i) => interpolateTurbo((1+i) / series.length)),
-        dataLabels: {
-            enabled: false
-        },
-        stroke: {
-            width: 2
-        },
-        xaxis: {
-            type: 'datetime',
-            min: new Date(Date.now() - 30 * 86400000).getTime(),
-        },
-        yaxis: {
-            logarithmic: false
-        },
-        title: {
-            text: 'Chart Title',
-        },
-        tooltip: {
-            x: {
-                show: false
-            }
+      chart: {
+        type: 'line',
+        height: 350
+      },
+      series: series,
+      colors: series.map((e, i) => interpolateTurbo((1 + i) / series.length)),
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        width: 2
+      },
+      xaxis: {
+        type: 'datetime',
+        min: new Date(Date.now() - 30 * 86400000).getTime(),
+      },
+      yaxis: {
+        logarithmic: false
+      },
+      title: {
+        text: 'Chart Title',
+      },
+      tooltip: {
+        x: {
+          show: false
         }
+      }
     }
 
     if ($(e).data('scale') == 'logarithmic') {
-        options.yaxis = {logarithmic: true}
+      options.yaxis = { logarithmic: true }
     }
 
     if ($(e).data('title')) {
-        options.title = {text: $(e).data('title')}
+      options.title = { text: $(e).data('title') }
     } else if ($(e).data('country')) {
-        options.title = {text: $(e).data('country')}
+      options.title = { text: $(e).data('country') }
     }
 
     renderDelayed(e, options)
-}
+  }
 
-function renderDonut(e, series) {
+  function renderDonut(e, series) {
     const options = {
-        chart: {
-            type: 'donut',
-            height: 350
-        },
-        series: series.map(([value, label]) => value),
-        labels: series.map(([value, label]) => label),
-        colors: series.map((e, i) => interpolateTurbo((series.length - i) / series.length)),
-        legend: {
-            show: false,
-        },
-        dataLabels: {
-            enabled: true,
-            formatter: (value, { seriesIndex, dataPointIndex, w }) => {
-                const country = w.config.labels[seriesIndex]
-                return `${country} - ${value.toFixed(2)}%`
-            }
-        },
-        plotOptions: {
-            pie: {
-                donut: {
-                    labels: {
-                        show: true,
-                        total: {
-                            show: true,
-                            label: $(e).data('title'),
-                        }
-                    }
-                }
-            }
+      chart: {
+        type: 'donut',
+        height: 350
+      },
+      series: series.map(([value, label]) => value),
+      labels: series.map(([value, label]) => label),
+      colors: series.map((e, i) => interpolateTurbo((series.length - i) / series.length)),
+      legend: {
+        show: false,
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: (value, { seriesIndex, dataPointIndex, w }) => {
+          const country = w.config.labels[seriesIndex]
+          return `${country} - ${value.toFixed(2)}%`
         }
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            labels: {
+              show: true,
+              total: {
+                show: true,
+                label: $(e).data('title'),
+              }
+            }
+          }
+        }
+      }
     }
     renderDelayed(e, options)
-}
+  }
 
-function renderDelayed(e, options) {
+  function renderDelayed(e, options) {
     const observer = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting) {
-            const chart = new ApexCharts(e, options)
-            chart.render()
-            $('.spinner', e).hide()
-            observer.unobserve(e)
-        }
+      if (entries[0].isIntersecting) {
+        const chart = new ApexCharts(e, options)
+        chart.render()
+        $('.spinner', e).hide()
+        observer.unobserve(e)
+      }
     }, { threshold: 0.1 });
 
     observer.observe(e)
-}
+  }
 
-function topNByCountry(ds, topn) {
+  function topNByCountry(ds, topn) {
     const byCountry = ds.rows.map(([[state, country], row]) => [row.slice(-1)[0], country]).sort(([a], [b]) => b - a)
     const rest = byCountry.slice(topn).reduce((a, [b]) => a + b, 0)
     byCountry.splice(topn, byCountry.length, [rest, 'Others'])
     return byCountry
-}
+  }
 
-$(function() {
+  $(function () {
     const sources = {
-        confirmed: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv',
-        deaths: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv',
-        recovered: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv',
+      confirmed: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv',
+      deaths: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv',
+      recovered: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv',
     }
 
     $('.chart')
-        .append('<div class="spinner spinner-border"/>')
-        .css('min-height', '350px')
+      .append('<div class="spinner spinner-border"/>')
+      .css('min-height', '350px')
 
     for (let src in sources) {
-        fetch(sources[src]).then(resp => resp.text()).then(csv => {
-            const dsByCountry = DataSet.load(csv).groupByCountry()
-            const dsChinaWorld = dsByCountry.relabel(([state, country]) => ['', country == 'China' ? country : 'World']).groupByCountry()
+      fetch(sources[src]).then(resp => resp.text()).then(csv => {
+        const dsByCountry = DataSet.load(csv).groupByCountry()
+        const dsChinaWorld = dsByCountry.relabel(([state, country]) => ['', country == 'China' ? country : 'World']).groupByCountry()
 
-            $('.chart')
-                .filter((i, e) => $(e).data('src') == src)
-                .each((i, e) => {
-                    let view;
-                    if ($(e).data('view') == 'china-world') {
-                        view = dsChinaWorld
-                    } else {
-                        view = dsByCountry
-                    }
-                    renderChart(e, view.toTimeSeries(rowFilter(e)))
-                })
+        $('.chart')
+          .filter((i, e) => $(e).data('src') == src)
+          .each((i, e) => {
+            let view;
+            if ($(e).data('view') == 'china-world') {
+              view = dsChinaWorld
+            } else {
+              view = dsByCountry
+            }
+            renderChart(e, view.toTimeSeries(rowFilter(e)))
+          })
 
-            $('.donut')
-                .filter((i, e) => $(e).data('src') == src)
-                .each((i, e) => {
-                    renderDonut(e, topNByCountry(dsByCountry, $(e).data('topn')))
-                })
-        })
+        $('.donut')
+          .filter((i, e) => $(e).data('src') == src)
+          .each((i, e) => {
+            renderDonut(e, topNByCountry(dsByCountry, $(e).data('topn')))
+          })
+      })
     }
 
     const smoothScroll = new SmoothScroll('header nav a', {
-        header: 'header nav',
-        speedAsDuration: true,
+      header: 'header nav',
+      speedAsDuration: true,
     });
-})
+  })
 </script>
 {{/layout}}
