@@ -16,6 +16,14 @@
       <div id="chart-overview-3" class="donut" data-src="recovered" data-title="Recovered" data-topn="7"></div>
     </div>
   </div>
+  <div class="row py-3 mx-lg-3">
+    <div class="col-12 col-lg-2"></div>
+    <div class="col-12 col-lg-8">
+      <div id="worldMap"></div>
+      <div id="worldMapSlider" class="py-2"></div>
+    </div>
+    <div class="col-12 col-lg-2"></div>
+  </div>
 </div>
 <div class="container-fluid" id="world">
   <div class="row py-3 pt-5 mt-5">
@@ -421,6 +429,83 @@
     observer.observe(e)
   }
 
+  function mapSeries(datasets, countryCodes, slice) {
+    const byCountry = {};
+
+    for (let key in datasets) {
+      byCountry[key] = datasets[key].rows
+        .map(([[state, country], row]) => [row[slice >= 0 ? slice : row.length + slice], country])
+        .reduce((m, [n, c]) => { m[c] = n; return m }, {})
+    }
+
+    const series = {}
+
+    for (let country of Object.keys(byCountry.confirmed)) {
+      if (country in countryCodes) {
+        series[countryCodes[country]] = {
+          confirmed: byCountry.confirmed[country],
+          deaths: byCountry.deaths[country],
+          recovered: byCountry.recovered[country],
+        }
+      } else {
+        console.log(`No country code for ${country}`)
+      }
+    }
+
+    return {
+      data: {
+        confirmed: {
+          name: 'Confirmed',
+          format: '{0}',
+          thousandSeparator: ',',
+        },
+        deaths: {
+          name: 'Deaths',
+          format: '{0}',
+          thousandSeparator: ',',
+        },
+        recovered: {
+          name: 'Recovered',
+          format: '{0}',
+          thousandSeparator: ',',
+        }
+      },
+      applyData: 'confirmed',
+      values: series
+    }
+  }
+
+  function initMap(datasets, countryCodes) {
+    const markers = datasets.confirmed.dates
+    const max = markers.length - 1
+
+    const slider = $('<input type="range" class="custom-range" min="0"/>').attr('max', max).val(max)
+    $('#worldMapSlider').append(slider)
+
+    const df = new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', dateStyle: 'medium' })
+    const low = df.format(new Date(markers[0])).split(',').shift()
+    const mid = df.format(new Date(markers[markers.length >> 1])).split(',').shift()
+    const high = df.format(new Date(markers[max])).split(',').shift()
+
+    const markerDiv = $('<div/>')
+    markerDiv.append($('<div class="float-left"/>').text(low))
+    markerDiv.append($('<div class="float-right"/>').text(high))
+    markerDiv.append($('<div class="text-center"/>').text(mid))
+    $('#worldMapSlider').append(markerDiv)
+
+    const theMap = new svgMap({
+      targetElementID: 'worldMap',
+      colorMax: '#CC0000',
+      colorMin: '#FFF0F0',
+      data: mapSeries(datasets, countryCodes, max),
+    })
+
+    slider.on('input', function() {
+      theMap.applyData(mapSeries(datasets, countryCodes, this.value))
+    })
+
+  }
+
   function topNByCountry(ds, topn) {
     const byCountry = ds.rows.map(([[state, country], row]) => [row.slice(-1)[0], country]).sort(([a], [b]) => b - a)
     const rest = byCountry.slice(topn).reduce((a, [b]) => a + b, 0)
@@ -439,8 +524,10 @@
       .append('<div class="spinner spinner-border"/>')
       .css('min-height', '350px')
 
+    const fetchQueue = []
+
     for (let src in sources) {
-      fetch(sources[src]).then(resp => resp.text()).then(csv => {
+      const ds = fetch(sources[src]).then(resp => resp.text()).then(csv => {
         const dsByCountry = DataSet.load(csv).groupByCountry()
         const dsChinaWorld = dsByCountry.relabel(([state, country]) => ['', country == 'China' ? country : 'World']).groupByCountry()
 
@@ -461,13 +548,31 @@
           .each((i, e) => {
             renderDonut(e, topNByCountry(dsByCountry, $(e).data('topn')))
           })
+
+        return [src, dsByCountry]
       })
+      fetchQueue.push(ds)
     }
+
+    fetchQueue.push(fetch('https://lab.ring0.hk/data/country-codes.json').then(resp => resp.json()))
 
     const smoothScroll = new SmoothScroll('header nav a', {
       header: 'header nav',
       speedAsDuration: true,
     });
+
+    (function(f) {
+      svgMap.prototype.getColor = function(c1, c2, r) {
+        r = Math.log10(Math.max(1, r * 100000)) / 5
+        return f.call(this, c1, c2, r)
+      }
+    })(svgMap.prototype.getColor);
+
+    Promise.all(fetchQueue).then((results) => {
+      const countryCodes = results.pop()
+      const datasets = results.reduce((dss, [src, ds]) => { dss[src] = ds; return dss }, {})
+      initMap(datasets, countryCodes);
+    })
   })
 </script>
 {{/layout}}
