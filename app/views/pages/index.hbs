@@ -20,7 +20,26 @@
     <div class="col-12 col-lg-2"></div>
     <div class="col-12 col-lg-8">
       <div id="worldMap"></div>
-      <div id="worldMapSlider" class="py-2"></div>
+      <div id="worldMapPlayback" class="py-2 text-center">
+        <button type="button" class="btn btn-pink btn-rounded btn-sm btn-fast-backward">
+          <i class="fas fa-fast-backward"></i>
+        </button>
+        <button type="button" class="btn btn-pink btn-rounded btn-sm btn-play">
+          <i class="fas fa-play"></i>
+        </button>
+        <button type="button" class="btn btn-pink btn-rounded btn-sm btn-pause d-none">
+          <i class="fas fa-pause"></i>
+        </button>
+        <button type="button" class="btn btn-pink btn-rounded btn-sm btn-fast-forward">
+          <i class="fas fa-fast-forward"></i>
+        </button>
+      </div>
+      <input type="range" id="worldMapSlider" class="my-custom-range"/>
+      <div id="worldMapSliderLabels" class="py-2">
+        <div class="slider-lower float-left"></div>
+        <div class="slider-upper float-right"></div>
+        <div class="slider-current text-center font-weight-bold"></div>
+      </div>
     </div>
     <div class="col-12 col-lg-2"></div>
   </div>
@@ -478,20 +497,51 @@
   function initMap(datasets, countryCodes) {
     const markers = datasets.confirmed.dates
     const max = markers.length - 1
+    const slider = $('#worldMapSlider').attr('max', max).val(max)
 
-    const slider = $('<input type="range" class="custom-range" min="0"/>').attr('max', max).val(max)
-    $('#worldMapSlider').append(slider)
+    let timer;
+    let timeout;
+
+    let playbackStart = function() {
+      timer = window.setInterval(() => {
+        const next = (parseInt(slider.val()) + 1) % markers.length
+        slider.val(next).trigger('input')
+        if (next == max) {
+          playbackStop()
+          timeout = window.setTimeout(playbackStart, 2500)
+        }
+      }, 250)
+    }
+
+    let playbackStop = function() {
+      window.clearInterval(timer)
+    }
+
+    $('#worldMapPlayback .btn-fast-backward').on('click', function() {
+      slider.val(0).trigger('input')
+    })
+
+    $('#worldMapPlayback .btn-play').on('click', function() {
+      $('.btn-play, .btn-pause', '#worldMapPlayback').toggleClass('d-none')
+      playbackStart()
+    })
+
+    $('#worldMapPlayback .btn-pause').on('click', function() {
+      $('.btn-play, .btn-pause', '#worldMapPlayback').toggleClass('d-none')
+      playbackStop()
+      window.clearTimeout(timeout)
+    })
+
+    $('#worldMapPlayback .btn-fast-forward').on('click', function() {
+      slider.val(max).trigger('input')
+    })
 
     const df = new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', dateStyle: 'medium' })
     const low = df.format(new Date(markers[0])).split(',').shift()
-    const mid = df.format(new Date(markers[markers.length >> 1])).split(',').shift()
     const high = df.format(new Date(markers[max])).split(',').shift()
 
-    const markerDiv = $('<div/>')
-    markerDiv.append($('<div class="float-left"/>').text(low))
-    markerDiv.append($('<div class="float-right"/>').text(high))
-    markerDiv.append($('<div class="text-center"/>').text(mid))
-    $('#worldMapSlider').append(markerDiv)
+    $('.slider-lower', '#worldMapSliderLabels').text(low)
+    $('.slider-current, .slider-upper', '#worldMapSliderLabels').text(high)
 
     const theMap = new svgMap({
       targetElementID: 'worldMap',
@@ -501,7 +551,11 @@
     })
 
     slider.on('input', function() {
-      theMap.applyData(mapSeries(datasets, countryCodes, this.value))
+      const cur = df.format(new Date(markers[this.value])).split(',').shift()
+      $('#worldMapSliderLabels .slider-current').text(cur)
+
+      theMap.options.data = mapSeries(datasets, countryCodes, this.value)
+      theMap.applyData(theMap.options.data)
     })
 
   }
