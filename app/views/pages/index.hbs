@@ -355,6 +355,27 @@
       + ")";
   }
 
+  // https://github.com/d3/d3-scale-chromatic/blob/master/src/sequential-single/Reds.js
+  var interpolateReds = (function() {
+    var colors=function(r){var n=r.length/6|0,t=new Array(n),a=0;while(a<n)t[a]="#"+r.slice(a*6,++a*6);return t};
+    var colorRgb=function(r){return{r:parseInt(r.slice(1,3),16),g:parseInt(r.slice(3,5),16),b:parseInt(r.slice(5,7),16),toString:function(){var r=this.opacity;r=isNaN(r)?1:Math.max(0,Math.min(1,r));return(r===1?"rgb(":"rgba(")+Math.max(0,Math.min(255,Math.round(this.r)||0))+", "+Math.max(0,Math.min(255,Math.round(this.g)||0))+", "+Math.max(0,Math.min(255,Math.round(this.b)||0))+(r===1?")":", "+r+")")}}};
+    var rgbSpline=function(u){return function(r){var n=r.length,t=new Array(n),a=new Array(n),i=new Array(n),e,o;for(e=0;e<n;++e){o=colorRgb(r[e]);t[e]=o.r||0;a[e]=o.g||0;i[e]=o.b||0}t=u(t);a=u(a);i=u(i);o.opacity=1;return function(r){o.r=t(r);o.g=a(r);o.b=i(r);return o+""}}};
+    var basis=function(o){var u=function(r,n,t,a,i){var e=r*r,o=e*r;return((1-3*r+3*e-o)*n+(4-6*e+3*o)*t+(1+3*r+3*e-3*o)*a+o*i)/6};var h=o.length-1;return function(r){var n=r<=0?r=0:r>=1?(r=1,h-1):Math.floor(r*h),t=o[n],a=o[n+1],i=n>0?o[n-1]:2*t-a,e=n<h-1?o[n+2]:2*a-t;return u((r-n/h)*h,i,t,a,e)}};
+    var interpolateRgbBasis=rgbSpline(basis);
+    var ramp=function(r){return interpolateRgbBasis(r[r.length-1])};
+
+    var scheme = new Array(3).concat(
+      "fee0d2fc9272de2d26",
+      "fee5d9fcae91fb6a4acb181d",
+      "fee5d9fcae91fb6a4ade2d26a50f15",
+      "fee5d9fcbba1fc9272fb6a4ade2d26a50f15",
+      "fee5d9fcbba1fc9272fb6a4aef3b2ccb181d99000d",
+      "fff5f0fee0d2fcbba1fc9272fb6a4aef3b2ccb181d99000d",
+      "fff5f0fee0d2fcbba1fc9272fb6a4aef3b2ccb181da50f1567000d"
+    ).map(colors);
+    return ramp(scheme);
+  })()
+
   function renderChart(e, series) {
     const options = {
       chart: {
@@ -407,7 +428,7 @@
       },
       series: series.map(([value, label]) => value),
       labels: series.map(([value, label]) => label),
-      colors: series.map((e, i) => interpolateTurbo((series.length - i) / series.length)),
+      colors: series.map((e, i) => interpolateReds((series.length - i) / series.length)),
       legend: {
         show: false,
       },
@@ -617,8 +638,8 @@
 
     (function(f) {
       svgMap.prototype.getColor = function(c1, c2, r) {
-        r = Math.log10(Math.max(1, r * 100000)) / 5
-        return f.call(this, c1, c2, r)
+        r = Math.log10(Math.max(1, r * 150000)) / 5
+        return interpolateReds(r)
       }
     })(svgMap.prototype.getColor);
 
