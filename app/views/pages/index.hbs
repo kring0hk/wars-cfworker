@@ -63,13 +63,13 @@
   </div>
   <div class="row py-3 mx-lg-3">
     <div class="col-12 col-lg-4">
-      <div id="chart-world-1" class="chart" data-src="confirmed" data-title="Confirmed (> 100000)" data-min="100000"></div>
+      <div id="chart-world-1" class="chart" data-src="confirmed" data-title="Confirmed (> 300000)" data-min="300000"></div>
     </div>
     <div class="col-12 col-lg-4">
       <div id="chart-world-2" class="chart" data-src="deaths" data-title="Deaths (> 10000)" data-min="10000"></div>
     </div>
     <div class="col-12 col-lg-4">
-      <div id="chart-world-3" class="chart" data-src="recovered" data-title="Recovered (> 50000)" data-min="50000"></div>
+      <div id="chart-world-3" class="chart" data-src="recovered" data-title="Recovered (> 200000)" data-min="200000"></div>
     </div>
   </div>
 </div>
@@ -567,7 +567,7 @@
           playbackStop()
           timeout = window.setTimeout(playbackStart, 2500)
         }
-      }, 250)
+      }, 150)
     }
 
     let playbackStop = function() {
